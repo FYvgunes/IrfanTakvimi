@@ -25,7 +25,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
 
-  final hadithRepo = HadithRepository();
+  final hadithCache = await HadithRepository.openBox();
+  final hadithRepo = HadithRepository(cache: hadithCache);
   await hadithRepo.load();
 
   final locationRepo = LocationRepository();

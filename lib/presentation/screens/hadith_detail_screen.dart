@@ -38,6 +38,8 @@ class _HadithDetailScreenState extends State<HadithDetailScreen> {
               Expanded(
                 child: PlatformAwareButton(
                   label: 'Önceki',
+                  variant: ButtonVariant.secondary,
+                  icon: Icons.arrow_back,
                   onPressed: hasPrev ? () => setState(() => _index--) : null,
                 ),
               ),
@@ -45,6 +47,8 @@ class _HadithDetailScreenState extends State<HadithDetailScreen> {
               Expanded(
                 child: PlatformAwareButton(
                   label: 'Sonraki',
+                  variant: ButtonVariant.secondary,
+                  icon: Icons.arrow_forward,
                   onPressed: hasNext ? () => setState(() => _index++) : null,
                 ),
               ),

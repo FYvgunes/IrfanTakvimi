@@ -186,7 +186,7 @@ class _SelectedDayCard extends StatelessWidget {
                   padding: EdgeInsets.all(AppSpacing.md),
                   child: Text(
                     'Vakitler alınamadı.',
-                    style: TextStyle(color: AppColors.indigo),
+                    style: TextStyle(color: AppColors.indigoDeep),
                   ),
                 );
               }

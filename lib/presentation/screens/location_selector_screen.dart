@@ -6,6 +6,7 @@ import '../../data/datasources/location_repository.dart';
 import '../../data/models/location_model.dart';
 import '../cubits/location_cubit.dart';
 import '../widgets/artistic_card.dart';
+import '../widgets/picker.dart';
 import '../widgets/platform_aware_button.dart';
 import '../widgets/platform_aware_scaffold.dart';
 
@@ -26,55 +27,98 @@ class _LocationSelectorScreenState extends State<LocationSelectorScreen> {
     final repo = context.read<ILocationRepository>();
     final countries = repo.countries;
     _country ??= countries.isNotEmpty ? countries.first : null;
+
     final cities = _country?.cities ?? const <CityEntry>[];
-    _city ??= cities.isNotEmpty ? cities.first : null;
     final districts = _city?.districts ?? const <DistrictEntry>[];
-    _district ??= districts.isNotEmpty ? districts.first : null;
+    final showCountry = countries.length > 1;
 
     return PlatformAwareScaffold(
       title: 'Konum Seç',
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: ArtisticCard(
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Ülke / İl / İlçe',
-                  style: TextStyle(
-                      fontSize: 13,
-                      letterSpacing: 1.2,
-                      color: AppColors.gold,
-                      fontWeight: FontWeight.w600)),
-              const SizedBox(height: AppSpacing.md),
-              _Dropdown<CountryEntry>(
-                label: 'Ülke',
-                value: _country,
-                items: countries,
-                itemLabel: (c) => c.name,
-                onChanged: (c) => setState(() {
-                  _country = c;
-                  _city = null;
-                  _district = null;
-                }),
+              Text(
+                'KONUM',
+                style: bodyFont(
+                  size: 11,
+                  color: AppColors.copper,
+                  weight: FontWeight.w600,
+                  letterSpacing: 2.4,
+                ),
               ),
-              const SizedBox(height: AppSpacing.sm),
-              _Dropdown<CityEntry>(
+              const SizedBox(height: AppSpacing.xs),
+              Container(
+                  width: 40,
+                  height: 1,
+                  color: AppColors.copper.withOpacity(0.55)),
+              const SizedBox(height: AppSpacing.lg),
+              if (showCountry) ...[
+                PickerField(
+                  label: 'Ülke',
+                  value: _country?.name,
+                  onTap: () async {
+                    final picked = await showPicker<CountryEntry>(
+                      context: context,
+                      title: 'Ülke Seç',
+                      items: countries,
+                      labelOf: (c) => c.name,
+                      selected: _country,
+                    );
+                    if (picked != null) {
+                      setState(() {
+                        _country = picked;
+                        _city = null;
+                        _district = null;
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: AppSpacing.md),
+              ],
+              PickerField(
                 label: 'İl',
-                value: _city,
-                items: cities,
-                itemLabel: (c) => c.name,
-                onChanged: (c) => setState(() {
-                  _city = c;
-                  _district = null;
-                }),
+                value: _city?.name,
+                onTap: cities.isEmpty
+                    ? null
+                    : () async {
+                        final picked = await showPicker<CityEntry>(
+                          context: context,
+                          title: 'İl Seç',
+                          items: cities,
+                          labelOf: (c) => c.name,
+                          selected: _city,
+                        );
+                        if (picked != null) {
+                          setState(() {
+                            _city = picked;
+                            _district = null;
+                          });
+                        }
+                      },
               ),
-              const SizedBox(height: AppSpacing.sm),
-              _Dropdown<DistrictEntry>(
+              const SizedBox(height: AppSpacing.md),
+              PickerField(
                 label: 'İlçe',
-                value: _district,
-                items: districts,
-                itemLabel: (d) => d.name,
-                onChanged: (d) => setState(() => _district = d),
+                value: _district?.name,
+                placeholder: _city == null ? 'Önce il seçin' : 'Seç',
+                onTap: districts.isEmpty
+                    ? null
+                    : () async {
+                        final picked = await showPicker<DistrictEntry>(
+                          context: context,
+                          title: '${_city!.name} • İlçe',
+                          items: districts,
+                          labelOf: (d) => d.name,
+                          selected: _district,
+                        );
+                        if (picked != null) {
+                          setState(() => _district = picked);
+                        }
+                      },
               ),
               const SizedBox(height: AppSpacing.lg),
               Align(
@@ -104,42 +148,5 @@ class _LocationSelectorScreenState extends State<LocationSelectorScreen> {
     );
     context.read<LocationCubit>().setManual(loc);
     Navigator.of(context).pop();
-  }
-}
-
-class _Dropdown<T> extends StatelessWidget {
-  final String label;
-  final T? value;
-  final List<T> items;
-  final String Function(T) itemLabel;
-  final ValueChanged<T?> onChanged;
-
-  const _Dropdown({
-    required this.label,
-    required this.value,
-    required this.items,
-    required this.itemLabel,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InputDecorator(
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-        isDense: true,
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<T>(
-          isExpanded: true,
-          value: value,
-          items: items
-              .map((e) => DropdownMenuItem<T>(value: e, child: Text(itemLabel(e))))
-              .toList(growable: false),
-          onChanged: items.isEmpty ? null : onChanged,
-        ),
-      ),
-    );
   }
 }

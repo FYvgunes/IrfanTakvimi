@@ -4,8 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/theme.dart';
 import '../../data/datasources/settings_repository.dart';
+import '../../data/models/location_model.dart';
+import '../cubits/location_cubit.dart';
 import '../cubits/settings_cubit.dart';
 import '../widgets/artistic_card.dart';
+import '../widgets/platform_aware_button.dart';
 import '../widgets/platform_aware_scaffold.dart';
 import 'location_selector_screen.dart';
 
@@ -14,6 +17,14 @@ class SettingsScreen extends StatelessWidget {
 
   static const _distanceOptions = <int>[1000, 5000, 10000, 25000];
   static const _languageOptions = <String>['tr', 'en', 'ar'];
+
+  static const _gpsFallback = ManualLocation(
+    country: 'TR',
+    city: 'İstanbul',
+    district: 'Üsküdar',
+    lat: 41.0233,
+    lng: 29.0151,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +64,7 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              _GpsSettingsCard(strings: s, fallback: _gpsFallback),
               ArtisticCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,6 +171,62 @@ class _SectionLabel extends StatelessWidget {
               letterSpacing: 1.4,
               color: AppColors.gold,
               fontWeight: FontWeight.w700)),
+    );
+  }
+}
+
+class _GpsSettingsCard extends StatelessWidget {
+  final AppStrings strings;
+  final ManualLocation fallback;
+
+  const _GpsSettingsCard({required this.strings, required this.fallback});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LocationCubit, LocationState>(
+      builder: (context, state) {
+        final (statusKey, statusColor) = switch (state) {
+          LocationGpsState() => ('gps_status_active', AppColors.emeraldDeep),
+          LocationDenied() => ('gps_status_denied', AppColors.copper),
+          _ => ('gps_status_inactive', AppColors.muted),
+        };
+        return ArtisticCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.my_location,
+                      color: statusColor.withOpacity(0.85), size: 20),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Text(
+                      strings.t(statusKey),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: statusColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Align(
+                alignment: Alignment.centerRight,
+                child: PlatformAwareButton(
+                  label: strings.t('use_gps'),
+                  variant: ButtonVariant.secondary,
+                  icon: Icons.my_location,
+                  dense: true,
+                  onPressed: () => context
+                      .read<LocationCubit>()
+                      .enableGps(fallback: fallback),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

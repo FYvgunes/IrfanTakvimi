@@ -26,6 +26,10 @@ class AppStrings {
       'notif_subtitle': '5 vakit için yerel hatırlatma gönderir',
       'select_manual_location': 'Manuel Konum Seç',
       'select_manual_location_sub': 'Ülke, il ve ilçe seçimi',
+      'use_gps': 'GPS Konumunu Kullan',
+      'gps_status_inactive': 'GPS şu an kullanılmıyor',
+      'gps_status_active': 'GPS aktif',
+      'gps_status_denied': 'İzin reddedildi — manuel konum kullanılıyor',
       'gps_threshold_title': 'GPS güncelleme eşiği',
       'gps_threshold_sub':
           'Bu mesafeyi aştığınızda vakitler yeniden hesaplanır.',
@@ -53,6 +57,10 @@ class AppStrings {
       'notif_subtitle': 'Sends local reminders for the 5 daily prayers',
       'select_manual_location': 'Select Manual Location',
       'select_manual_location_sub': 'Country, city and district selection',
+      'use_gps': 'Use GPS Location',
+      'gps_status_inactive': 'GPS is not currently in use',
+      'gps_status_active': 'GPS active',
+      'gps_status_denied': 'Permission denied — using manual location',
       'gps_threshold_title': 'GPS update threshold',
       'gps_threshold_sub':
           'Prayer times are recomputed once you move beyond this distance.',
@@ -80,6 +88,10 @@ class AppStrings {
       'notif_subtitle': 'يرسل تذكيرات محلية للصلوات الخمس',
       'select_manual_location': 'اختر الموقع يدويًا',
       'select_manual_location_sub': 'اختيار الدولة والمدينة والحي',
+      'use_gps': 'استخدام موقع GPS',
+      'gps_status_inactive': 'GPS غير مستخدم حاليًا',
+      'gps_status_active': 'GPS نشط',
+      'gps_status_denied': 'تم رفض الإذن — يتم استخدام الموقع اليدوي',
       'gps_threshold_title': 'حد تحديث GPS',
       'gps_threshold_sub':
           'يُعاد حساب أوقات الصلاة عند تجاوز هذه المسافة.',
