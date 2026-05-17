@@ -33,3 +33,4 @@ flutter:
   assets:
     - assets/data/hadiths.json
     - assets/data/locations.json
+    - assets/data/religious_days.json

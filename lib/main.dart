@@ -11,6 +11,7 @@ import 'core/services/notification_service.dart';
 import 'data/datasources/hadith_repository.dart';
 import 'data/datasources/location_repository.dart';
 import 'data/datasources/prayer_repository.dart';
+import 'data/datasources/religious_day_repository.dart';
 import 'data/datasources/settings_repository.dart';
 import 'presentation/cubits/location_cubit.dart';
 import 'presentation/cubits/settings_cubit.dart';
@@ -19,6 +20,7 @@ import 'presentation/screens/dashboard_screen.dart';
 import 'presentation/screens/hadith_list_screen.dart';
 import 'presentation/screens/qibla_compass_screen.dart';
 import 'presentation/screens/settings_screen.dart';
+import 'presentation/widgets/app_logo.dart';
 import 'presentation/widgets/platform_aware_nav_shell.dart';
 
 Future<void> main() async {
@@ -31,6 +33,9 @@ Future<void> main() async {
 
   final locationRepo = LocationRepository();
   await locationRepo.load();
+
+  final religiousDayRepo = ReligiousDayRepository();
+  await religiousDayRepo.load();
 
   final settingsRepo = SettingsRepository();
   await settingsRepo.open();
@@ -47,6 +52,7 @@ Future<void> main() async {
     hadithRepository: hadithRepo,
     locationRepository: locationRepo,
     prayerRepository: PrayerRepository(cache: prayerCache),
+    religiousDayRepository: religiousDayRepo,
     settingsRepository: settingsRepo,
     settingsCubit: settingsCubit,
     notificationService: notifications,
@@ -59,6 +65,7 @@ class IrfanTakvimApp extends StatelessWidget {
   final IHadithRepository hadithRepository;
   final ILocationRepository locationRepository;
   final IPrayerRepository prayerRepository;
+  final IReligiousDayRepository religiousDayRepository;
   final ISettingsRepository settingsRepository;
   final SettingsCubit settingsCubit;
   final INotificationService notificationService;
@@ -70,6 +77,7 @@ class IrfanTakvimApp extends StatelessWidget {
     required this.hadithRepository,
     required this.locationRepository,
     required this.prayerRepository,
+    required this.religiousDayRepository,
     required this.settingsRepository,
     required this.settingsCubit,
     required this.notificationService,
@@ -84,6 +92,7 @@ class IrfanTakvimApp extends StatelessWidget {
         RepositoryProvider<IHadithRepository>.value(value: hadithRepository),
         RepositoryProvider<ILocationRepository>.value(value: locationRepository),
         RepositoryProvider<IPrayerRepository>.value(value: prayerRepository),
+        RepositoryProvider<IReligiousDayRepository>.value(value: religiousDayRepository),
         RepositoryProvider<ISettingsRepository>.value(value: settingsRepository),
         RepositoryProvider<INotificationService>.value(value: notificationService),
       ],
@@ -112,6 +121,7 @@ class IrfanTakvimApp extends StatelessWidget {
                     icon: Icons.wb_sunny_outlined,
                     selectedIcon: Icons.wb_sunny,
                     label: strings.t('tab_today'),
+                    customIcon: const AppLogo(size: 24),
                     builder: (_) => const DashboardScreen(),
                   ),
                   NavDestination(

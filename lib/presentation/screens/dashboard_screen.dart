@@ -9,9 +9,11 @@ import '../../core/utils/responsive.dart';
 import '../../data/datasources/hadith_repository.dart';
 import '../../data/datasources/location_repository.dart';
 import '../../data/datasources/prayer_repository.dart';
+import '../../data/datasources/religious_day_repository.dart';
 import '../../data/models/hadith_model.dart';
 import '../../data/models/location_model.dart';
 import '../../data/models/prayer_time_model.dart';
+import '../../data/models/religious_day_model.dart';
 import '../cubits/location_cubit.dart';
 import '../widgets/artistic_card.dart';
 import '../widgets/platform_aware_scaffold.dart';
@@ -69,6 +71,13 @@ class DashboardScreen extends StatelessWidget {
           final prayerCard = _PrayerHeritageCard(location: loc);
           final hadithQuote = const _HadithQuote();
 
+          final todayReligious = context
+              .read<IReligiousDayRepository>()
+              .byDate(DateTime.now());
+          final religiousBadge = todayReligious == null
+              ? null
+              : _TodayReligiousBadge(day: todayReligious);
+
           final wide = Responsive.isTablet(context) || Responsive.isDesktop(context);
           if (!wide) {
             return ListView(
@@ -76,6 +85,10 @@ class DashboardScreen extends StatelessWidget {
                   AppSpacing.md, AppSpacing.lg, AppSpacing.md, AppSpacing.lg),
               children: [
                 header,
+                if (religiousBadge != null) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  religiousBadge,
+                ],
                 const SizedBox(height: AppSpacing.lg),
                 prayerCard,
                 const SizedBox(height: AppSpacing.lg),
@@ -87,6 +100,10 @@ class DashboardScreen extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.lg),
             children: [
               header,
+              if (religiousBadge != null) ...[
+                const SizedBox(height: AppSpacing.md),
+                religiousBadge,
+              ],
               const SizedBox(height: AppSpacing.lg),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,13 +169,19 @@ class _LocationHeaderState extends State<_LocationHeader> {
   @override
   Widget build(BuildContext context) {
     final state = widget.state;
-    final (place, mode) = switch (state) {
-      LocationManualState(:final location) =>
-        (location.district.toUpperCase(), 'Manuel'),
+    final (place, subtitle, mode) = switch (state) {
+      LocationManualState(:final location) => (
+        location.district.toUpperCase(),
+        location.city,
+        'Manuel',
+      ),
       LocationGpsState(:final location) => _gpsLabel(context, location),
-      LocationDenied(:final fallback) =>
-        (fallback.district.toUpperCase(), 'İzin reddedildi'),
-      LocationInitial() => ('ÜSKÜDAR', 'Varsayılan'),
+      LocationDenied(:final fallback) => (
+        fallback.district.toUpperCase(),
+        fallback.city,
+        'İzin reddedildi',
+      ),
+      LocationInitial() => ('ÜSKÜDAR', 'İstanbul', 'Varsayılan'),
     };
     return InkWell(
       onTap: () => Navigator.of(context).push(
@@ -168,22 +191,31 @@ class _LocationHeaderState extends State<_LocationHeader> {
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
         child: Column(
           children: [
+            if (subtitle.isNotEmpty) ...[
+              Text(
+                subtitle.toUpperCase(),
+                textAlign: TextAlign.center,
+                style: bodyFont(
+                  size: 11,
+                  color: AppColors.copper,
+                  letterSpacing: 3.6,
+                  weight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 6),
+            ],
             Text(
               place,
               textAlign: TextAlign.center,
               style: displayFont(
-                size: 26,
+                size: 28,
                 weight: FontWeight.w500,
-                letterSpacing: 4,
+                letterSpacing: 4.5,
                 color: AppColors.ink,
               ),
             ),
-            const SizedBox(height: AppSpacing.xs),
-            Container(
-              width: 56,
-              height: 1,
-              color: AppColors.copper.withOpacity(0.55),
-            ),
+            const SizedBox(height: AppSpacing.sm),
+            const _OrnamentalRule(),
             const SizedBox(height: AppSpacing.sm),
             Text(
               _formatDate(_now),
@@ -225,18 +257,20 @@ class _LocationHeaderState extends State<_LocationHeader> {
 /// For GPS state, display the nearest known province name rather than the
 /// raw lat/lng. The actual GPS coordinates are still passed downstream to
 /// the prayer-time API for precision.
-(String, String) _gpsLabel(BuildContext context, GpsLocation g) {
+(String, String, String) _gpsLabel(BuildContext context, GpsLocation g) {
   final repo = context.read<ILocationRepository>();
   final match = nearestLocation(
     lat: g.lat,
     lng: g.lng,
     countries: repo.countries,
   );
-  if (match == null) return ('GPS', 'GPS');
+  if (match == null) return ('GPS', '', 'GPS');
   final modeSuffix = match.distanceKm < 1
       ? 'GPS'
       : 'GPS · ~${match.distanceKm.toStringAsFixed(0)} km';
-  return (match.city.name.toUpperCase(), modeSuffix);
+  // For GPS, big label is the city (province) — district inherits the
+  // province-center coords so it isn't meaningful as a subtitle. Leave empty.
+  return (match.city.name.toUpperCase(), '', modeSuffix);
 }
 
 class _PrayerHeritageCard extends StatefulWidget {
@@ -488,6 +522,91 @@ class _HadithQuote extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _TodayReligiousBadge extends StatelessWidget {
+  final ReligiousDay day;
+  const _TodayReligiousBadge({required this.day});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: AppColors.copper.withOpacity(0.10),
+        borderRadius: BorderRadius.circular(AppRadius.small),
+        border: Border.all(color: AppColors.copper.withOpacity(0.55), width: 1),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.copper,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'BUGÜN',
+                  style: bodyFont(
+                    size: 10,
+                    color: AppColors.copper,
+                    letterSpacing: 2.4,
+                    weight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  day.name,
+                  style: displayFont(
+                    size: 17,
+                    color: AppColors.ink,
+                    weight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Centered copper hairline rule with a small dot at the middle —
+/// Ottoman manuscript bezeme cadence used under place names.
+class _OrnamentalRule extends StatelessWidget {
+  const _OrnamentalRule();
+
+  @override
+  Widget build(BuildContext context) {
+    final lineColor = AppColors.copper.withOpacity(0.55);
+    Widget line() => Container(width: 56, height: 0.8, color: lineColor);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        line(),
+        const SizedBox(width: 10),
+        Container(
+          width: 4,
+          height: 4,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.copper,
+          ),
+        ),
+        const SizedBox(width: 10),
+        line(),
+      ],
     );
   }
 }

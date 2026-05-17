@@ -7,11 +7,23 @@ class NavDestination {
   final String label;
   final WidgetBuilder builder;
 
+  /// Optional custom widget shown in place of [icon] (e.g., the app logo).
+  /// When provided, takes precedence over [icon] in both Material and
+  /// Cupertino nav bars. Should render at roughly 24×24 to align with stock
+  /// nav-bar icons.
+  final Widget? customIcon;
+
+  /// Optional custom widget shown in place of [selectedIcon] when this
+  /// destination is selected. Falls back to [customIcon] if null.
+  final Widget? customSelectedIcon;
+
   const NavDestination({
     required this.icon,
     required this.label,
     required this.builder,
     this.selectedIcon,
+    this.customIcon,
+    this.customSelectedIcon,
   });
 }
 
@@ -43,7 +55,12 @@ class _PlatformAwareNavShellState extends State<PlatformAwareNavShell> {
           onTap: (i) => setState(() => _index = i),
           items: [
             for (final d in widget.destinations)
-              BottomNavigationBarItem(icon: Icon(d.icon), label: d.label),
+              BottomNavigationBarItem(
+                icon: d.customIcon ?? Icon(d.icon),
+                activeIcon:
+                    d.customSelectedIcon ?? d.customIcon ?? Icon(d.selectedIcon ?? d.icon),
+                label: d.label,
+              ),
           ],
         ),
         tabBuilder: (context, i) => CupertinoTabView(
@@ -65,8 +82,10 @@ class _PlatformAwareNavShellState extends State<PlatformAwareNavShell> {
         destinations: [
           for (final d in widget.destinations)
             NavigationDestination(
-              icon: Icon(d.icon),
-              selectedIcon: d.selectedIcon == null ? null : Icon(d.selectedIcon),
+              icon: d.customIcon ?? Icon(d.icon),
+              selectedIcon: d.customSelectedIcon ??
+                  d.customIcon ??
+                  (d.selectedIcon == null ? null : Icon(d.selectedIcon)),
               label: d.label,
             ),
         ],

@@ -8,12 +8,17 @@ class MonthGrid extends StatelessWidget {
   final DateTime today;
   final ValueChanged<DateTime> onDayTap;
 
+  /// Days within [month] that should render a small copper marker dot below
+  /// the day number — typically religious days. Compared by day-of-month.
+  final Set<int> markedDays;
+
   const MonthGrid({
     super.key,
     required this.month,
     required this.selected,
     required this.today,
     required this.onDayTap,
+    this.markedDays = const {},
   });
 
   static const _weekdayLabels = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
@@ -67,6 +72,35 @@ class MonthGrid extends StatelessWidget {
     final date = DateTime(month.year, month.month, dayNum);
     final isToday = _sameDay(date, today);
     final isSelected = _sameDay(date, selected);
+    final isMarked = markedDays.contains(dayNum);
+
+    // Background fill priority: selected > marked tint > none.
+    final Color? bgColor = isSelected
+        ? AppColors.emeraldDeep
+        : (isMarked ? AppColors.copper.withOpacity(0.18) : null);
+
+    // Border: copper hairline if marked-but-not-selected, gold for today,
+    // marked-today gets the gold border (today wins visually) over a copper fill.
+    final Border? border = isSelected
+        ? null
+        : isToday
+            ? Border.all(color: AppColors.gold, width: 1.5)
+            : isMarked
+                ? Border.all(
+                    color: AppColors.copper.withOpacity(0.55),
+                    width: 1,
+                  )
+                : null;
+
+    // Day-number color: cream on selected, copper on marked, emerald on today,
+    // default ink otherwise.
+    final Color textColor = isSelected
+        ? AppColors.parchment
+        : isMarked
+            ? AppColors.copper
+            : isToday
+                ? AppColors.emeraldDeep
+                : AppColors.indigoDeep;
 
     return AspectRatio(
       aspectRatio: 1,
@@ -82,21 +116,37 @@ class MonthGrid extends StatelessWidget {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isSelected ? AppColors.emeraldDeep : null,
-                border: isToday && !isSelected
-                    ? Border.all(color: AppColors.gold, width: 1.5)
-                    : null,
+                color: bgColor,
+                border: border,
               ),
-              child: Text(
-                '$dayNum',
-                style: TextStyle(
-                  color: isSelected
-                      ? AppColors.parchment
-                      : (isToday ? AppColors.emeraldDeep : AppColors.indigoDeep),
-                  fontWeight:
-                      isSelected || isToday ? FontWeight.w700 : FontWeight.w400,
-                  fontSize: 14,
-                ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Text(
+                    '$dayNum',
+                    style: TextStyle(
+                      color: textColor,
+                      fontWeight: isSelected || isToday || isMarked
+                          ? FontWeight.w700
+                          : FontWeight.w400,
+                      fontSize: 14,
+                    ),
+                  ),
+                  if (isMarked)
+                    Positioned(
+                      bottom: 3,
+                      child: Container(
+                        width: 5,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isSelected
+                              ? AppColors.copperSoft
+                              : AppColors.copper,
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ),

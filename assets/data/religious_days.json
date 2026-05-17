@@ -1,0 +1,18 @@
+[
+  { "date": "2026-02-13", "name": "Berat Kandili",         "type": "kandil",  "hijri": "14-15 Şaban 1447" },
+  { "date": "2026-02-18", "name": "Ramazan Başlangıcı",    "type": "ay",      "hijri": "1 Ramazan 1447" },
+  { "date": "2026-03-14", "name": "Kadir Gecesi",          "type": "gece",    "hijri": "27 Ramazan 1447" },
+  { "date": "2026-03-20", "name": "Ramazan Bayramı (1. Gün)", "type": "bayram", "hijri": "1 Şevval 1447" },
+  { "date": "2026-03-21", "name": "Ramazan Bayramı (2. Gün)", "type": "bayram", "hijri": "2 Şevval 1447" },
+  { "date": "2026-03-22", "name": "Ramazan Bayramı (3. Gün)", "type": "bayram", "hijri": "3 Şevval 1447" },
+  { "date": "2026-05-26", "name": "Kurban Bayramı (1. Gün)",  "type": "bayram", "hijri": "10 Zilhicce 1447" },
+  { "date": "2026-05-27", "name": "Kurban Bayramı (2. Gün)",  "type": "bayram", "hijri": "11 Zilhicce 1447" },
+  { "date": "2026-05-28", "name": "Kurban Bayramı (3. Gün)",  "type": "bayram", "hijri": "12 Zilhicce 1447" },
+  { "date": "2026-05-29", "name": "Kurban Bayramı (4. Gün)",  "type": "bayram", "hijri": "13 Zilhicce 1447" },
+  { "date": "2026-06-17", "name": "Hicri Yılbaşı",          "type": "ay",     "hijri": "1 Muharrem 1448" },
+  { "date": "2026-06-26", "name": "Aşure Günü",             "type": "gun",    "hijri": "10 Muharrem 1448" },
+  { "date": "2026-08-25", "name": "Mevlid Kandili",         "type": "kandil", "hijri": "12 Rebîülevvel 1448" },
+  { "date": "2027-01-14", "name": "Regaib Kandili",         "type": "kandil", "hijri": "Recep ayı ilk Cuma gecesi 1448" },
+  { "date": "2027-01-14", "name": "Mi'rac Kandili",         "type": "kandil", "hijri": "27 Recep 1448" },
+  { "date": "2027-02-01", "name": "Berat Kandili",          "type": "kandil", "hijri": "14-15 Şaban 1448" }
+]
