@@ -32,11 +32,10 @@ class PrayerTimeRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final base = onHeritage ? AppColors.cream : AppColors.ink;
-    final muted =
-        onHeritage ? AppColors.creamMuted : AppColors.inkMuted;
-    final highlight =
-        onHeritage ? AppColors.copperSoft : AppColors.copper;
+    final p = context.palette;
+    final base = onHeritage ? p.cream : p.ink;
+    final muted = onHeritage ? p.creamMuted : p.inkMuted;
+    final highlight = onHeritage ? p.copperSoft : p.copper;
 
     final color = (isActive || isNext) ? highlight : base;
     final weight = isActive
@@ -45,28 +44,25 @@ class PrayerTimeRow extends StatelessWidget {
 
     final Widget dot;
     if (isActive) {
-      // Filled copper disc
       dot = Container(
         width: 8,
         height: 8,
-        decoration: const BoxDecoration(
-          color: AppColors.copper,
+        decoration: BoxDecoration(
+          color: p.copper,
           shape: BoxShape.circle,
         ),
       );
     } else if (isNext) {
-      // Outlined copper ring
       dot = Container(
         width: 8,
         height: 8,
         decoration: BoxDecoration(
           color: Colors.transparent,
           shape: BoxShape.circle,
-          border: Border.all(color: AppColors.copper, width: 1.5),
+          border: Border.all(color: p.copper, width: 1.5),
         ),
       );
     } else {
-      // Muted dot
       dot = Container(
         width: 6,
         height: 6,
@@ -96,7 +92,7 @@ class PrayerTimeRow extends StatelessWidget {
             ),
           ),
           if (isActive) ...[
-            const _ActiveBadge(),
+            _ActiveBadge(palette: p),
             const SizedBox(width: AppSpacing.sm),
           ],
           Text(
@@ -116,10 +112,9 @@ class PrayerTimeRow extends StatelessWidget {
 
     if (!isActive) return row;
 
-    // Active rows get a warm copper-tinted background pill.
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.copper.withOpacity(onHeritage ? 0.16 : 0.10),
+        color: p.copper.withOpacity(onHeritage ? 0.16 : 0.10),
         borderRadius: BorderRadius.circular(AppRadius.small),
       ),
       child: row,
@@ -128,21 +123,22 @@ class PrayerTimeRow extends StatelessWidget {
 }
 
 class _ActiveBadge extends StatelessWidget {
-  const _ActiveBadge();
+  final AppPalette palette;
+  const _ActiveBadge({required this.palette});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: AppColors.copper,
+        color: palette.copper,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
         'ŞU AN',
         style: bodyFont(
           size: 9,
-          color: AppColors.ivory,
+          color: palette.ground,
           weight: FontWeight.w700,
           letterSpacing: 1.4,
         ),

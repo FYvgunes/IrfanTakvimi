@@ -8,6 +8,7 @@ import 'core/constants/theme.dart';
 import 'core/services/compass_service.dart';
 import 'core/services/location_service.dart';
 import 'core/services/notification_service.dart';
+import 'data/datasources/esma_repository.dart';
 import 'data/datasources/hadith_repository.dart';
 import 'data/datasources/location_repository.dart';
 import 'data/datasources/prayer_repository.dart';
@@ -37,6 +38,9 @@ Future<void> main() async {
   final religiousDayRepo = ReligiousDayRepository();
   await religiousDayRepo.load();
 
+  final esmaRepo = EsmaRepository();
+  await esmaRepo.load();
+
   final settingsRepo = SettingsRepository();
   await settingsRepo.open();
   final settingsCubit = await SettingsCubit.create(settingsRepo);
@@ -53,6 +57,7 @@ Future<void> main() async {
     locationRepository: locationRepo,
     prayerRepository: PrayerRepository(cache: prayerCache),
     religiousDayRepository: religiousDayRepo,
+    esmaRepository: esmaRepo,
     settingsRepository: settingsRepo,
     settingsCubit: settingsCubit,
     notificationService: notifications,
@@ -66,6 +71,7 @@ class IrfanTakvimApp extends StatelessWidget {
   final ILocationRepository locationRepository;
   final IPrayerRepository prayerRepository;
   final IReligiousDayRepository religiousDayRepository;
+  final IEsmaRepository esmaRepository;
   final ISettingsRepository settingsRepository;
   final SettingsCubit settingsCubit;
   final INotificationService notificationService;
@@ -78,6 +84,7 @@ class IrfanTakvimApp extends StatelessWidget {
     required this.locationRepository,
     required this.prayerRepository,
     required this.religiousDayRepository,
+    required this.esmaRepository,
     required this.settingsRepository,
     required this.settingsCubit,
     required this.notificationService,
@@ -93,6 +100,7 @@ class IrfanTakvimApp extends StatelessWidget {
         RepositoryProvider<ILocationRepository>.value(value: locationRepository),
         RepositoryProvider<IPrayerRepository>.value(value: prayerRepository),
         RepositoryProvider<IReligiousDayRepository>.value(value: religiousDayRepository),
+        RepositoryProvider<IEsmaRepository>.value(value: esmaRepository),
         RepositoryProvider<ISettingsRepository>.value(value: settingsRepository),
         RepositoryProvider<INotificationService>.value(value: notificationService),
       ],
@@ -107,7 +115,13 @@ class IrfanTakvimApp extends StatelessWidget {
             return MaterialApp(
               title: 'İrfan Takvimi',
               debugShowCheckedModeBanner: false,
-              theme: buildAppTheme(),
+              theme: buildAppTheme(Brightness.light),
+              darkTheme: buildAppTheme(Brightness.dark),
+              themeMode: switch (settings.themeMode) {
+                'light' => ThemeMode.light,
+                'dark' => ThemeMode.dark,
+                _ => ThemeMode.system,
+              },
               locale: Locale(settings.languageCode),
               supportedLocales: AppStrings.supportedLocales,
               localizationsDelegates: const [

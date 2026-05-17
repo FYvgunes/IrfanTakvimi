@@ -28,6 +28,7 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     final s = AppStrings.of(context);
     return PlatformAwareScaffold(
       title: s.t('settings_title'),
@@ -43,7 +44,7 @@ class SettingsScreen extends StatelessWidget {
                   title: Text(s.t('notif_title')),
                   subtitle: Text(s.t('notif_subtitle')),
                   value: settings.notificationsEnabled,
-                  activeColor: AppColors.emeraldDeep,
+                  activeColor: p.heritageEdge,
                   onChanged: (v) =>
                       context.read<SettingsCubit>().setNotificationsEnabled(v),
                 ),
@@ -52,8 +53,8 @@ class SettingsScreen extends StatelessWidget {
               ArtisticCard(
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.place_outlined,
-                      color: AppColors.emeraldDeep),
+                  leading: Icon(Icons.place_outlined,
+                      color: p.heritageEdge),
                   title: Text(s.t('select_manual_location')),
                   subtitle: Text(s.t('select_manual_location_sub')),
                   trailing: const Icon(Icons.chevron_right),
@@ -70,13 +71,13 @@ class SettingsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(s.t('gps_threshold_title'),
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontWeight: FontWeight.w600,
-                            color: AppColors.indigoDeep)),
+                            color: p.ink)),
                     const SizedBox(height: AppSpacing.xs),
                     Text(s.t('gps_threshold_sub'),
-                        style: const TextStyle(
-                            fontSize: 12, color: AppColors.muted)),
+                        style: TextStyle(
+                            fontSize: 12, color: p.inkMuted)),
                     const SizedBox(height: AppSpacing.sm),
                     DropdownButton<int>(
                       isExpanded: true,
@@ -96,15 +97,41 @@ class SettingsScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              _SectionLabel(s.t('section_theme')),
+              ArtisticCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(s.t('theme_picker_label'),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: p.ink)),
+                    const SizedBox(height: AppSpacing.sm),
+                    Wrap(
+                      spacing: AppSpacing.sm,
+                      children: [
+                        for (final mode in const ['system', 'light', 'dark'])
+                          ChoiceChip(
+                            label: Text(s.t('theme_$mode')),
+                            selected: settings.themeMode == mode,
+                            onSelected: (_) => context
+                                .read<SettingsCubit>()
+                                .setThemeMode(mode),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
               _SectionLabel(s.t('section_language')),
               ArtisticCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(s.t('language_picker_label'),
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontWeight: FontWeight.w600,
-                            color: AppColors.indigoDeep)),
+                            color: p.ink)),
                     const SizedBox(height: AppSpacing.sm),
                     DropdownButton<String>(
                       isExpanded: true,
@@ -130,14 +157,14 @@ class SettingsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(s.t('about_app'),
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.emeraldDeep)),
+                            color: p.heritageEdge)),
                     const SizedBox(height: AppSpacing.xs),
                     Text(s.t('about_version'),
-                        style: const TextStyle(
-                            color: AppColors.muted, fontSize: 12)),
+                        style: TextStyle(
+                            color: p.inkMuted, fontSize: 12)),
                     const SizedBox(height: AppSpacing.sm),
                     Text(s.t('about_credit'),
                         style: const TextStyle(
@@ -162,14 +189,15 @@ class _SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     return Padding(
       padding: const EdgeInsets.fromLTRB(
           AppSpacing.sm, AppSpacing.md, AppSpacing.sm, AppSpacing.xs),
       child: Text(text.toUpperCase(),
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 11,
               letterSpacing: 1.4,
-              color: AppColors.gold,
+              color: p.copper,
               fontWeight: FontWeight.w700)),
     );
   }
@@ -183,12 +211,13 @@ class _GpsSettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     return BlocBuilder<LocationCubit, LocationState>(
       builder: (context, state) {
         final (statusKey, statusColor) = switch (state) {
-          LocationGpsState() => ('gps_status_active', AppColors.emeraldDeep),
-          LocationDenied() => ('gps_status_denied', AppColors.copper),
-          _ => ('gps_status_inactive', AppColors.muted),
+          LocationGpsState() => ('gps_status_active', p.heritageEdge),
+          LocationDenied() => ('gps_status_denied', p.copper),
+          _ => ('gps_status_inactive', p.inkMuted),
         };
         return ArtisticCard(
           child: Column(

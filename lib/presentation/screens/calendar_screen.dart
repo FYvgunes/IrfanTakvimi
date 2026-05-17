@@ -52,9 +52,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Future<void> _openMonthYearPicker() async {
+    final p = context.palette;
     final picked = await showModalBottomSheet<DateTime>(
       context: context,
-      backgroundColor: AppColors.ivory,
+      backgroundColor: p.ground,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.card)),
@@ -141,10 +142,11 @@ class _MonthHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     return Row(
       children: [
         IconButton(
-          icon: const Icon(Icons.chevron_left, color: AppColors.emeraldDeep),
+          icon: Icon(Icons.chevron_left, color: p.heritageEdge),
           onPressed: onPrev,
         ),
         Expanded(
@@ -158,17 +160,17 @@ class _MonthHeader extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.indigoDeep,
+                      color: p.ink,
                       letterSpacing: 0.3,
                     ),
                   ),
                   const SizedBox(width: 4),
                   Icon(
                     Icons.arrow_drop_down,
-                    color: AppColors.copper.withOpacity(0.75),
+                    color: p.copper.withOpacity(0.75),
                     size: 20,
                   ),
                 ],
@@ -177,7 +179,7 @@ class _MonthHeader extends StatelessWidget {
           ),
         ),
         IconButton(
-          icon: const Icon(Icons.chevron_right, color: AppColors.emeraldDeep),
+          icon: Icon(Icons.chevron_right, color: p.heritageEdge),
           onPressed: onNext,
         ),
       ],
@@ -204,6 +206,7 @@ class _MonthYearPickerSheetState extends State<_MonthYearPickerSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     final currentYear = DateTime.now().year;
     // Years span 5 back and 10 forward — enough for past records and planning.
     final years = [for (var y = currentYear - 5; y <= currentYear + 10; y++) y];
@@ -221,7 +224,7 @@ class _MonthYearPickerSheetState extends State<_MonthYearPickerSheet> {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: AppColors.copper.withOpacity(0.35),
+                  color: p.copper.withOpacity(0.35),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -231,7 +234,7 @@ class _MonthYearPickerSheetState extends State<_MonthYearPickerSheet> {
               textAlign: TextAlign.center,
               style: bodyFont(
                 size: 11,
-                color: AppColors.copper,
+                color: p.copper,
                 weight: FontWeight.w600,
                 letterSpacing: 2.4,
               ),
@@ -250,12 +253,12 @@ class _MonthYearPickerSheetState extends State<_MonthYearPickerSheet> {
                     label: Text('$y'),
                     selected: selected,
                     onSelected: (_) => setState(() => _year = y),
-                    backgroundColor: AppColors.ivorySoft,
-                    selectedColor: AppColors.heritage,
-                    side: BorderSide(color: AppColors.copper.withOpacity(0.40)),
+                    backgroundColor: p.groundSoft,
+                    selectedColor: p.heritage,
+                    side: BorderSide(color: p.copper.withOpacity(0.40)),
                     labelStyle: bodyFont(
                       size: 14,
-                      color: selected ? AppColors.cream : AppColors.ink,
+                      color: selected ? p.cream : p.ink,
                       weight: FontWeight.w500,
                       letterSpacing: 0.4,
                     ),
@@ -269,7 +272,7 @@ class _MonthYearPickerSheetState extends State<_MonthYearPickerSheet> {
               textAlign: TextAlign.center,
               style: bodyFont(
                 size: 11,
-                color: AppColors.copper,
+                color: p.copper,
                 weight: FontWeight.w600,
                 letterSpacing: 2.4,
               ),
@@ -312,16 +315,17 @@ class _MonthChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.small),
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: selected ? AppColors.heritage : AppColors.ivorySoft,
+          color: selected ? p.heritage : p.groundSoft,
           borderRadius: BorderRadius.circular(AppRadius.small),
           border: Border.all(
-            color: AppColors.copper.withOpacity(selected ? 0.75 : 0.30),
+            color: p.copper.withOpacity(selected ? 0.75 : 0.30),
             width: 1,
           ),
         ),
@@ -329,7 +333,7 @@ class _MonthChip extends StatelessWidget {
           label,
           style: bodyFont(
             size: 14,
-            color: selected ? AppColors.cream : AppColors.ink,
+            color: selected ? p.cream : p.ink,
             weight: FontWeight.w500,
             letterSpacing: 0.4,
           ),
@@ -356,6 +360,7 @@ class _SelectedDayCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     final repo = context.read<IPrayerRepository>();
     final weekday = _weekdayNames[date.weekday - 1];
     return ArtisticCard(
@@ -364,10 +369,10 @@ class _SelectedDayCard extends StatelessWidget {
         children: [
           Text(
             '${date.day} · $weekday',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               letterSpacing: 1.2,
-              color: AppColors.gold,
+              color: p.copper,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -395,11 +400,11 @@ class _SelectedDayCard extends StatelessWidget {
                     orElse: () => null,
                   );
               if (schedule == null) {
-                return const Padding(
-                  padding: EdgeInsets.all(AppSpacing.md),
+                return Padding(
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   child: Text(
                     'Vakitler alınamadı.',
-                    style: TextStyle(color: AppColors.indigoDeep),
+                    style: TextStyle(color: p.ink),
                   ),
                 );
               }
@@ -423,13 +428,14 @@ class _ReligiousDayBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     return Container(
       padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md, vertical: AppSpacing.sm),
       decoration: BoxDecoration(
-        color: AppColors.copper.withOpacity(0.10),
+        color: p.copper.withOpacity(0.10),
         borderRadius: BorderRadius.circular(AppRadius.small),
-        border: Border.all(color: AppColors.copper.withOpacity(0.50), width: 1),
+        border: Border.all(color: p.copper.withOpacity(0.50), width: 1),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -437,9 +443,9 @@ class _ReligiousDayBanner extends StatelessWidget {
           Container(
             width: 6,
             height: 6,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.copper,
+              color: p.copper,
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
@@ -451,7 +457,7 @@ class _ReligiousDayBanner extends StatelessWidget {
                   day.name,
                   style: displayFont(
                     size: 16,
-                    color: AppColors.ink,
+                    color: p.ink,
                     weight: FontWeight.w500,
                   ),
                 ),
@@ -460,7 +466,7 @@ class _ReligiousDayBanner extends StatelessWidget {
                   day.hijri,
                   style: bodyFont(
                     size: 11,
-                    color: AppColors.inkMuted,
+                    color: p.inkMuted,
                     letterSpacing: 0.4,
                   ),
                 ),

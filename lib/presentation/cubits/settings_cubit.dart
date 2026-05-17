@@ -29,4 +29,11 @@ class SettingsCubit extends Cubit<AppSettings> {
     emit(next);
     await _repo.save(next);
   }
+
+  /// [mode] must be one of 'system' | 'light' | 'dark'.
+  Future<void> setThemeMode(String mode) async {
+    final next = state.copyWith(themeMode: mode);
+    emit(next);
+    await _repo.save(next);
+  }
 }

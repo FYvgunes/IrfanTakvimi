@@ -25,6 +25,7 @@ class MonthGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     final first = DateTime(month.year, month.month, 1);
     final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
     final leading = (first.weekday + 6) % 7;
@@ -41,10 +42,10 @@ class MonthGrid extends StatelessWidget {
                 child: Center(
                   child: Text(
                     l,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.muted,
+                      color: p.inkMuted,
                       letterSpacing: 0.6,
                     ),
                   ),
@@ -57,14 +58,14 @@ class MonthGrid extends StatelessWidget {
           Row(
             children: [
               for (var c = 0; c < 7; c++)
-                Expanded(child: _buildCell(r * 7 + c, leading, daysInMonth)),
+                Expanded(child: _buildCell(p, r * 7 + c, leading, daysInMonth)),
             ],
           ),
       ],
     );
   }
 
-  Widget _buildCell(int index, int leading, int daysInMonth) {
+  Widget _buildCell(AppPalette p, int index, int leading, int daysInMonth) {
     final dayNum = index - leading + 1;
     if (dayNum < 1 || dayNum > daysInMonth) {
       return const AspectRatio(aspectRatio: 1, child: SizedBox.shrink());
@@ -76,31 +77,27 @@ class MonthGrid extends StatelessWidget {
 
     // Background fill priority: selected > marked tint > none.
     final Color? bgColor = isSelected
-        ? AppColors.emeraldDeep
-        : (isMarked ? AppColors.copper.withOpacity(0.18) : null);
+        ? p.heritage
+        : (isMarked ? p.copper.withOpacity(0.18) : null);
 
-    // Border: copper hairline if marked-but-not-selected, gold for today,
-    // marked-today gets the gold border (today wins visually) over a copper fill.
     final Border? border = isSelected
         ? null
         : isToday
-            ? Border.all(color: AppColors.gold, width: 1.5)
+            ? Border.all(color: p.copper, width: 1.5)
             : isMarked
                 ? Border.all(
-                    color: AppColors.copper.withOpacity(0.55),
+                    color: p.copper.withOpacity(0.55),
                     width: 1,
                   )
                 : null;
 
-    // Day-number color: cream on selected, copper on marked, emerald on today,
-    // default ink otherwise.
     final Color textColor = isSelected
-        ? AppColors.parchment
+        ? p.cream
         : isMarked
-            ? AppColors.copper
+            ? p.copper
             : isToday
-                ? AppColors.emeraldDeep
-                : AppColors.indigoDeep;
+                ? p.heritage
+                : p.ink;
 
     return AspectRatio(
       aspectRatio: 1,
@@ -140,9 +137,7 @@ class MonthGrid extends StatelessWidget {
                         height: 5,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: isSelected
-                              ? AppColors.copperSoft
-                              : AppColors.copper,
+                          color: isSelected ? p.copperSoft : p.copper,
                         ),
                       ),
                     ),

@@ -2,14 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/theme.dart';
 import '../../core/utils/nearest_location.dart';
 import '../../core/utils/responsive.dart';
+import '../../data/datasources/esma_repository.dart';
 import '../../data/datasources/hadith_repository.dart';
 import '../../data/datasources/location_repository.dart';
 import '../../data/datasources/prayer_repository.dart';
 import '../../data/datasources/religious_day_repository.dart';
+import '../../data/models/esma_model.dart';
 import '../../data/models/hadith_model.dart';
 import '../../data/models/location_model.dart';
 import '../../data/models/prayer_time_model.dart';
@@ -69,6 +72,7 @@ class DashboardScreen extends StatelessWidget {
           final loc = _resolve(state);
           final header = _LocationHeader(state: state);
           final prayerCard = _PrayerHeritageCard(location: loc);
+          const esmaCard = _DailyEsma();
           final hadithQuote = const _HadithQuote();
 
           final todayReligious = context
@@ -92,6 +96,8 @@ class DashboardScreen extends StatelessWidget {
                 const SizedBox(height: AppSpacing.lg),
                 prayerCard,
                 const SizedBox(height: AppSpacing.lg),
+                esmaCard,
+                const SizedBox(height: AppSpacing.lg),
                 hadithQuote,
               ],
             );
@@ -104,6 +110,8 @@ class DashboardScreen extends StatelessWidget {
                 const SizedBox(height: AppSpacing.md),
                 religiousBadge,
               ],
+              const SizedBox(height: AppSpacing.lg),
+              esmaCard,
               const SizedBox(height: AppSpacing.lg),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,6 +176,7 @@ class _LocationHeaderState extends State<_LocationHeader> {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     final state = widget.state;
     final (place, subtitle, mode) = switch (state) {
       LocationManualState(:final location) => (
@@ -197,7 +206,7 @@ class _LocationHeaderState extends State<_LocationHeader> {
                 textAlign: TextAlign.center,
                 style: bodyFont(
                   size: 11,
-                  color: AppColors.copper,
+                  color: p.copper,
                   letterSpacing: 3.6,
                   weight: FontWeight.w600,
                 ),
@@ -211,7 +220,7 @@ class _LocationHeaderState extends State<_LocationHeader> {
                 size: 28,
                 weight: FontWeight.w500,
                 letterSpacing: 4.5,
-                color: AppColors.ink,
+                color: p.ink,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -221,7 +230,7 @@ class _LocationHeaderState extends State<_LocationHeader> {
               _formatDate(_now),
               style: bodyFont(
                 size: 13,
-                color: AppColors.inkMuted,
+                color: p.inkMuted,
                 letterSpacing: 0.6,
               ),
             ),
@@ -230,7 +239,7 @@ class _LocationHeaderState extends State<_LocationHeader> {
               _formatClock(_now),
               style: displayFont(
                 size: 28,
-                color: AppColors.ink,
+                color: p.ink,
                 weight: FontWeight.w500,
                 letterSpacing: 2.4,
               ).copyWith(
@@ -242,7 +251,7 @@ class _LocationHeaderState extends State<_LocationHeader> {
               mode,
               style: bodyFont(
                 size: 10,
-                color: AppColors.copper,
+                color: p.copper,
                 letterSpacing: 1.6,
                 weight: FontWeight.w500,
               ),
@@ -312,6 +321,7 @@ class _PrayerHeritageCardState extends State<_PrayerHeritageCard> {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     return ArtisticCard(
       variant: CardVariant.heritage,
       padding: const EdgeInsets.fromLTRB(
@@ -320,10 +330,10 @@ class _PrayerHeritageCardState extends State<_PrayerHeritageCard> {
         future: _future,
         builder: (context, snap) {
           if (snap.connectionState != ConnectionState.done) {
-            return const Padding(
-              padding: EdgeInsets.all(AppSpacing.md),
+            return Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
               child: Center(
-                child: CircularProgressIndicator(color: AppColors.copperSoft),
+                child: CircularProgressIndicator(color: p.copperSoft),
               ),
             );
           }
@@ -333,7 +343,7 @@ class _PrayerHeritageCardState extends State<_PrayerHeritageCard> {
               padding: const EdgeInsets.all(AppSpacing.md),
               child: Text(
                 'Vakitler alınamadı. İnternet bağlantınızı kontrol edin.',
-                style: bodyFont(color: AppColors.cream),
+                style: bodyFont(color: p.cream),
               ),
             );
           }
@@ -352,14 +362,14 @@ class _PrayerHeritageCardState extends State<_PrayerHeritageCard> {
               const SizedBox(height: AppSpacing.md),
               Container(
                 height: 1,
-                color: AppColors.copper.withOpacity(0.30),
+                color: p.copper.withOpacity(0.30),
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
                 'BUGÜNÜN VAKİTLERİ',
                 style: bodyFont(
                   size: 11,
-                  color: AppColors.copperSoft,
+                  color: p.copperSoft,
                   weight: FontWeight.w600,
                   letterSpacing: 2.4,
                 ),
@@ -386,6 +396,7 @@ class _NextPrayerHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     if (next == null) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -394,7 +405,7 @@ class _NextPrayerHero extends StatelessWidget {
             'SIRADAKİ',
             style: bodyFont(
               size: 10,
-              color: AppColors.copperSoft,
+              color: p.copperSoft,
               letterSpacing: 2.4,
               weight: FontWeight.w600,
             ),
@@ -402,7 +413,7 @@ class _NextPrayerHero extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(
             'Tüm vakitler tamamlandı',
-            style: displayFont(size: 22, color: AppColors.cream),
+            style: displayFont(size: 22, color: p.cream),
           ),
         ],
       );
@@ -418,7 +429,7 @@ class _NextPrayerHero extends StatelessWidget {
               'SIRADAKİ',
               style: bodyFont(
                 size: 10,
-                color: AppColors.copperSoft,
+                color: p.copperSoft,
                 letterSpacing: 2.4,
                 weight: FontWeight.w600,
               ),
@@ -427,7 +438,7 @@ class _NextPrayerHero extends StatelessWidget {
               _formatClock(now),
               style: bodyFont(
                 size: 12,
-                color: AppColors.creamMuted,
+                color: p.creamMuted,
                 letterSpacing: 1.0,
                 weight: FontWeight.w500,
               ).copyWith(
@@ -445,7 +456,7 @@ class _NextPrayerHero extends StatelessWidget {
               n.name,
               style: displayFont(
                 size: 32,
-                color: AppColors.cream,
+                color: p.cream,
                 letterSpacing: 1.2,
               ),
             ),
@@ -454,7 +465,7 @@ class _NextPrayerHero extends StatelessWidget {
               _formatTime(n.time),
               style: displayFont(
                 size: 36,
-                color: AppColors.copperSoft,
+                color: p.copperSoft,
                 letterSpacing: 1.0,
               ).copyWith(
                 fontFeatures: const [FontFeature.tabularFigures()],
@@ -467,7 +478,7 @@ class _NextPrayerHero extends StatelessWidget {
           _countdown(n.time, now),
           style: bodyFont(
             size: 13,
-            color: AppColors.creamMuted,
+            color: p.creamMuted,
             letterSpacing: 0.4,
           ).copyWith(
             fontFeatures: const [FontFeature.tabularFigures()],
@@ -483,6 +494,7 @@ class _HadithQuote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     final repo = context.read<IHadithRepository>();
     final HadithModel h = repo.getDaily();
     return Padding(
@@ -495,19 +507,19 @@ class _HadithQuote extends StatelessWidget {
             'GÜNÜN HADİSİ',
             style: bodyFont(
               size: 10,
-              color: AppColors.copper,
+              color: p.copper,
               weight: FontWeight.w600,
               letterSpacing: 2.4,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
-          Container(width: 40, height: 1, color: AppColors.copper.withOpacity(0.55)),
+          Container(width: 40, height: 1, color: p.copper.withOpacity(0.55)),
           const SizedBox(height: AppSpacing.md),
           Text(
             '“${h.text}”',
             style: displayFont(
               size: 20,
-              color: AppColors.ink,
+              color: p.ink,
               weight: FontWeight.w400,
             ).copyWith(fontStyle: FontStyle.italic, height: 1.5),
           ),
@@ -516,9 +528,79 @@ class _HadithQuote extends StatelessWidget {
             '— ${h.source}, no. ${h.hadithNo}',
             style: bodyFont(
               size: 12,
-              color: AppColors.inkMuted,
+              color: p.inkMuted,
               letterSpacing: 0.4,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DailyEsma extends StatelessWidget {
+  const _DailyEsma();
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final repo = context.read<IEsmaRepository>();
+    final EsmaModel e = repo.getDaily();
+    return Container(
+      padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.md),
+      decoration: BoxDecoration(
+        color: p.groundSoft,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        border: Border.all(color: p.copper.withOpacity(0.40), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            'GÜNÜN İSMİ',
+            style: bodyFont(
+              size: 10,
+              color: p.copper,
+              weight: FontWeight.w600,
+              letterSpacing: 2.4,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Container(width: 40, height: 1, color: p.copper.withOpacity(0.55)),
+          const SizedBox(height: AppSpacing.md),
+          // Arabic — rendered in Amiri (classical naskh), large and centered.
+          Text(
+            e.arabic,
+            textAlign: TextAlign.center,
+            textDirection: TextDirection.rtl,
+            style: GoogleFonts.amiri(
+              fontSize: 38,
+              fontWeight: FontWeight.w700,
+              color: p.heritage,
+              height: 1.6,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            e.translit,
+            textAlign: TextAlign.center,
+            style: displayFont(
+              size: 20,
+              color: p.ink,
+              weight: FontWeight.w500,
+              letterSpacing: 1.2,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            e.meaning,
+            textAlign: TextAlign.center,
+            style: bodyFont(
+              size: 14,
+              color: p.inkMuted,
+              height: 1.5,
+            ).copyWith(fontStyle: FontStyle.italic),
           ),
         ],
       ),
@@ -532,22 +614,23 @@ class _TodayReligiousBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     return Container(
       padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md, vertical: AppSpacing.sm),
       decoration: BoxDecoration(
-        color: AppColors.copper.withOpacity(0.10),
+        color: p.copper.withOpacity(0.10),
         borderRadius: BorderRadius.circular(AppRadius.small),
-        border: Border.all(color: AppColors.copper.withOpacity(0.55), width: 1),
+        border: Border.all(color: p.copper.withOpacity(0.55), width: 1),
       ),
       child: Row(
         children: [
           Container(
             width: 8,
             height: 8,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.copper,
+              color: p.copper,
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
@@ -559,7 +642,7 @@ class _TodayReligiousBadge extends StatelessWidget {
                   'BUGÜN',
                   style: bodyFont(
                     size: 10,
-                    color: AppColors.copper,
+                    color: p.copper,
                     letterSpacing: 2.4,
                     weight: FontWeight.w600,
                   ),
@@ -569,7 +652,7 @@ class _TodayReligiousBadge extends StatelessWidget {
                   day.name,
                   style: displayFont(
                     size: 17,
-                    color: AppColors.ink,
+                    color: p.ink,
                     weight: FontWeight.w500,
                   ),
                 ),
@@ -589,7 +672,8 @@ class _OrnamentalRule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lineColor = AppColors.copper.withOpacity(0.55);
+    final p = context.palette;
+    final lineColor = p.copper.withOpacity(0.55);
     Widget line() => Container(width: 56, height: 0.8, color: lineColor);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -599,9 +683,9 @@ class _OrnamentalRule extends StatelessWidget {
         Container(
           width: 4,
           height: 4,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.copper,
+            color: p.copper,
           ),
         ),
         const SizedBox(width: 10),

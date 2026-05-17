@@ -2,10 +2,13 @@ import 'package:flutter/widgets.dart';
 import '../../core/constants/theme.dart';
 
 enum CardVariant {
-  /// Light card on the ivory ground, hairline copper border.
+  /// Light card on the ivory ground, hairline copper border. In dark mode
+  /// renders as a slightly raised dark surface from `context.palette.groundSoft`.
   ivory,
 
-  /// Deep emerald heritage card with a copper top rule.
+  /// Deep emerald heritage card with a copper top rule. Intentionally similar
+  /// in both light and dark modes (heritage is a brand-color card, not a
+  /// surface).
   heritage,
 }
 
@@ -27,13 +30,14 @@ class ArtisticCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = _isHeritage ? AppColors.heritage : AppColors.ivorySoft;
+    final p = context.palette;
+    final bg = _isHeritage ? p.heritage : p.groundSoft;
     final borderColor = _isHeritage
-        ? AppColors.copper.withOpacity(0.55)
-        : AppColors.copper.withOpacity(0.30);
+        ? p.copper.withOpacity(0.55)
+        : p.copper.withOpacity(0.30);
     final shadowColor = _isHeritage
-        ? AppColors.heritageEdge.withOpacity(0.35)
-        : AppColors.ink.withOpacity(0.06);
+        ? p.heritageEdge.withOpacity(0.35)
+        : p.ink.withOpacity(0.06);
 
     final card = Container(
       decoration: BoxDecoration(
@@ -60,9 +64,9 @@ class ArtisticCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppColors.copper.withOpacity(0.0),
-                      AppColors.copper,
-                      AppColors.copper.withOpacity(0.0),
+                      p.copper.withOpacity(0.0),
+                      p.copper,
+                      p.copper.withOpacity(0.0),
                     ],
                   ),
                   borderRadius: const BorderRadius.vertical(

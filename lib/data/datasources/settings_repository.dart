@@ -5,28 +5,35 @@ class AppSettings {
   final int gpsDistanceFilterMeters;
   final String languageCode;
 
+  /// One of: 'system' | 'light' | 'dark'. Drives `MaterialApp.themeMode`.
+  final String themeMode;
+
   const AppSettings({
     required this.notificationsEnabled,
     required this.gpsDistanceFilterMeters,
     required this.languageCode,
+    required this.themeMode,
   });
 
   AppSettings copyWith({
     bool? notificationsEnabled,
     int? gpsDistanceFilterMeters,
     String? languageCode,
+    String? themeMode,
   }) =>
       AppSettings(
         notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
         gpsDistanceFilterMeters:
             gpsDistanceFilterMeters ?? this.gpsDistanceFilterMeters,
         languageCode: languageCode ?? this.languageCode,
+        themeMode: themeMode ?? this.themeMode,
       );
 
   static const defaults = AppSettings(
     notificationsEnabled: true,
     gpsDistanceFilterMeters: 5000,
     languageCode: 'tr',
+    themeMode: 'system',
   );
 }
 
@@ -40,6 +47,7 @@ class SettingsRepository implements ISettingsRepository {
   static const _kNotif = 'notifications_enabled';
   static const _kDistance = 'gps_distance_filter_m';
   static const _kLang = 'language_code';
+  static const _kThemeMode = 'theme_mode';
 
   late final Box _box;
 
@@ -55,6 +63,8 @@ class SettingsRepository implements ISettingsRepository {
             defaultValue: AppSettings.defaults.gpsDistanceFilterMeters) as int,
         languageCode: _box.get(_kLang,
             defaultValue: AppSettings.defaults.languageCode) as String,
+        themeMode: _box.get(_kThemeMode,
+            defaultValue: AppSettings.defaults.themeMode) as String,
       );
 
   @override
@@ -62,5 +72,6 @@ class SettingsRepository implements ISettingsRepository {
     await _box.put(_kNotif, s.notificationsEnabled);
     await _box.put(_kDistance, s.gpsDistanceFilterMeters);
     await _box.put(_kLang, s.languageCode);
+    await _box.put(_kThemeMode, s.themeMode);
   }
 }

@@ -21,27 +21,41 @@ class AppLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Crescent fill picks the color that pops against the surface it sits on:
+    //   - explicitly onHeritage → cream
+    //   - dark theme (dark ground) → cream
+    //   - otherwise (light theme on ivory) → deep heritage emerald
+    final crescentColor =
+        (onHeritage || isDark) ? p.cream : p.heritage;
     return SizedBox.square(
       dimension: size,
       child: CustomPaint(
-        painter: _LogoPainter(onHeritage: onHeritage),
+        painter: _LogoPainter(
+          stroke: p.copper,
+          strokeSoft: p.copper.withOpacity(0.55),
+          crescent: crescentColor,
+        ),
       ),
     );
   }
 }
 
 class _LogoPainter extends CustomPainter {
-  final bool onHeritage;
-  _LogoPainter({required this.onHeritage});
+  final Color stroke;
+  final Color strokeSoft;
+  final Color crescent;
+  _LogoPainter({
+    required this.stroke,
+    required this.strokeSoft,
+    required this.crescent,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     final c = size.center(Offset.zero);
     final r = size.shortestSide / 2;
-
-    const stroke = AppColors.copper;
-    final strokeSoft = AppColors.copper.withOpacity(0.55);
-    final crescent = onHeritage ? AppColors.cream : AppColors.heritage;
 
     final outerRing = Paint()
       ..style = PaintingStyle.stroke
@@ -85,5 +99,7 @@ class _LogoPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _LogoPainter old) =>
-      old.onHeritage != onHeritage;
+      old.stroke != stroke ||
+      old.strokeSoft != strokeSoft ||
+      old.crescent != crescent;
 }
