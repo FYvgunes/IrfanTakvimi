@@ -1,0 +1,14 @@
+[
+  {
+    "country": "TR",
+    "country_name": "Türkiye",
+    "cities": [
+      {
+        "name": "İstanbul",
+        "districts": [
+          { "name": "Üsküdar", "lat": 41.0233, "lng": 29.0151 }
+        ]
+      }
+    ]
+  }
+]

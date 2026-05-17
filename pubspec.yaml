@@ -1,0 +1,34 @@
+name: irfan_takvim
+description: Spiritual & artistic calendar with prayer times, Qibla finder, and verified daily Hadith notifications.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.19.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_bloc: ^8.1.6
+  geolocator: ^12.0.0
+  permission_handler: ^11.3.1
+  flutter_compass: ^0.8.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  flutter_local_notifications: ^17.2.2
+  timezone: ^0.9.4
+  http: ^1.2.2
+
+dev_dependencies:
+  flutter_lints: ^4.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/data/hadiths.json
+    - assets/data/locations.json
