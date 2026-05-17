@@ -44,3 +44,6 @@ app.*.map.json
 
 # Claude Code local overrides (machine-specific permissions)
 .claude/settings.local.json
+
+# Project spec for AI tools — kept local, not shared
+CLAUDE.md
