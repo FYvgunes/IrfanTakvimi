@@ -20,11 +20,27 @@
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">
 
+  <!-- Disable iOS Safari auto-detection of phone numbers, dates, times, addresses, etc.
+       Without this, Safari wraps Flutter web text spans in tappable links with yellow underlines. -->
+  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no, url=no">
+
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="irfan_takvim">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <style>
+    /* Defensive: if Safari still injects detector anchors, neutralize their styling. */
+    a[x-apple-data-detectors],
+    a[href^="tel:"],
+    a[href^="sms:"],
+    a[href^="mailto:"] {
+      color: inherit !important;
+      text-decoration: none !important;
+      pointer-events: none !important;
+    }
+  </style>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
