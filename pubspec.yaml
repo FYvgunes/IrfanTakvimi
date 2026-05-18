@@ -4,8 +4,8 @@ publish_to: "none"
 version: 0.1.0+1
 
 environment:
-  sdk: ">=3.3.0 <4.0.0"
-  flutter: ">=3.19.0"
+  sdk: ">=3.9.0 <4.0.0"
+  flutter: ">=3.35.0"
 
 dependencies:
   flutter:
@@ -21,7 +21,7 @@ dependencies:
   flutter_local_notifications: ^17.2.2
   timezone: ^0.9.4
   http: ^1.2.2
-  google_fonts: 6.2.1 # pinned: 6.3.0 ships a const map keyed by FontWeight that breaks dart2js web build
+  google_fonts: ^6.3.3 # 6.3.3+ switched the FontWeight-keyed map from const to final (needed for dart2js with Dart 3.5+)
 
 dev_dependencies:
   flutter_lints: ^4.0.0
