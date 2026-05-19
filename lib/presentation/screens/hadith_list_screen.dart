@@ -40,6 +40,7 @@ class _HadithTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     return InkWell(
       borderRadius: BorderRadius.circular(AppRadius.card),
       onTap: onTap,
@@ -51,8 +52,8 @@ class _HadithTile extends StatelessWidget {
               children: [
                 Text(
                   '#${hadith.hadithNo}',
-                  style: const TextStyle(
-                    color: AppColors.gold,
+                  style: TextStyle(
+                    color: p.copper,
                     fontSize: 12,
                     letterSpacing: 1.2,
                     fontWeight: FontWeight.w700,
@@ -62,8 +63,8 @@ class _HadithTile extends StatelessWidget {
                 Expanded(
                   child: Text(
                     hadith.source,
-                    style: const TextStyle(
-                      color: AppColors.muted,
+                    style: TextStyle(
+                      color: p.inkMuted,
                       fontSize: 12,
                     ),
                   ),
@@ -75,11 +76,11 @@ class _HadithTile extends StatelessWidget {
               hadith.text,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 height: 1.45,
                 fontStyle: FontStyle.italic,
-                color: AppColors.indigoDeep,
+                color: p.ink,
               ),
             ),
           ],

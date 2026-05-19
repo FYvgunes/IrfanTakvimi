@@ -47,6 +47,7 @@ class PickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     final hasValue = value != null && value!.isNotEmpty;
     return InkWell(
       onTap: onTap,
@@ -55,9 +56,9 @@ class PickerField extends StatelessWidget {
         padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md, vertical: AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.ivory,
+          color: p.groundSoft,
           borderRadius: BorderRadius.circular(AppRadius.small),
-          border: Border.all(color: AppColors.copper.withOpacity(0.40), width: 1),
+          border: Border.all(color: p.copper.withOpacity(0.40), width: 1),
         ),
         child: Row(
           children: [
@@ -69,7 +70,7 @@ class PickerField extends StatelessWidget {
                     label.toUpperCase(),
                     style: bodyFont(
                       size: 10,
-                      color: AppColors.copper,
+                      color: p.copper,
                       letterSpacing: 1.8,
                       weight: FontWeight.w600,
                     ),
@@ -79,7 +80,7 @@ class PickerField extends StatelessWidget {
                     hasValue ? value! : placeholder,
                     style: bodyFont(
                       size: 16,
-                      color: hasValue ? AppColors.ink : AppColors.inkMuted,
+                      color: hasValue ? p.ink : p.inkMuted,
                       weight: hasValue ? FontWeight.w500 : FontWeight.w400,
                     ),
                   ),
@@ -88,7 +89,7 @@ class PickerField extends StatelessWidget {
             ),
             Icon(
               Icons.chevron_right,
-              color: AppColors.copper.withOpacity(0.7),
+              color: p.copper.withOpacity(0.7),
               size: 22,
             ),
           ],
@@ -154,6 +155,7 @@ class _PickerScreenState<T> extends State<_PickerScreen<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     final folded = _fold(_query.trim());
     final filtered = folded.isEmpty
         ? widget.items
@@ -162,12 +164,12 @@ class _PickerScreenState<T> extends State<_PickerScreen<T>> {
             .toList(growable: false);
 
     return Scaffold(
-      backgroundColor: AppColors.ivory,
+      backgroundColor: p.ground,
       appBar: AppBar(
         title: Text(widget.title.toUpperCase()),
         titleTextStyle: displayFont(
           size: 18,
-          color: AppColors.ink,
+          color: p.ink,
           letterSpacing: 2.4,
           weight: FontWeight.w500,
         ),
@@ -180,44 +182,40 @@ class _PickerScreenState<T> extends State<_PickerScreen<T>> {
             child: TextField(
               controller: _ctl,
               autofocus: true,
-              style: bodyFont(size: 15, color: AppColors.ink),
-              cursorColor: AppColors.copper,
+              style: bodyFont(size: 15, color: p.ink),
+              cursorColor: p.copper,
               decoration: InputDecoration(
                 hintText: widget.searchHint,
-                hintStyle: bodyFont(size: 15, color: AppColors.inkMuted),
-                prefixIcon: const Icon(Icons.search,
-                    color: AppColors.copper, size: 20),
+                hintStyle: bodyFont(size: 15, color: p.inkMuted),
+                prefixIcon: Icon(Icons.search, color: p.copper, size: 20),
                 filled: true,
-                fillColor: AppColors.ivorySoft,
+                fillColor: p.groundSoft,
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md, vertical: AppSpacing.sm),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppRadius.small),
-                  borderSide:
-                      BorderSide(color: AppColors.copper.withOpacity(0.30)),
+                  borderSide: BorderSide(color: p.copper.withOpacity(0.30)),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppRadius.small),
-                  borderSide:
-                      BorderSide(color: AppColors.copper.withOpacity(0.30)),
+                  borderSide: BorderSide(color: p.copper.withOpacity(0.30)),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppRadius.small),
-                  borderSide:
-                      BorderSide(color: AppColors.copper.withOpacity(0.75)),
+                  borderSide: BorderSide(color: p.copper.withOpacity(0.75)),
                 ),
               ),
               onChanged: (v) => setState(() => _query = v),
             ),
           ),
-          Container(height: 1, color: AppColors.copper.withOpacity(0.20)),
+          Container(height: 1, color: p.copper.withOpacity(0.20)),
           Expanded(
             child: filtered.isEmpty
                 ? Center(
                     child: Text(
                       widget.emptyText,
-                      style: bodyFont(size: 14, color: AppColors.inkMuted),
+                      style: bodyFont(size: 14, color: p.inkMuted),
                     ),
                   )
                 : ListView.separated(
@@ -227,7 +225,7 @@ class _PickerScreenState<T> extends State<_PickerScreen<T>> {
                       height: 1,
                       margin: const EdgeInsets.symmetric(
                           horizontal: AppSpacing.md),
-                      color: AppColors.copper.withOpacity(0.10),
+                      color: p.copper.withOpacity(0.10),
                     ),
                     itemBuilder: (context, i) {
                       final item = filtered[i];
@@ -247,7 +245,7 @@ class _PickerScreenState<T> extends State<_PickerScreen<T>> {
                                   widget.labelOf(item),
                                   style: bodyFont(
                                     size: 16,
-                                    color: AppColors.ink,
+                                    color: p.ink,
                                     weight: isSelected
                                         ? FontWeight.w600
                                         : FontWeight.w400,
@@ -255,8 +253,7 @@ class _PickerScreenState<T> extends State<_PickerScreen<T>> {
                                 ),
                               ),
                               if (isSelected)
-                                const Icon(Icons.check,
-                                    color: AppColors.copper, size: 18),
+                                Icon(Icons.check, color: p.copper, size: 18),
                             ],
                           ),
                         ),
@@ -276,16 +273,17 @@ class _SelectionDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     return Container(
       width: 16,
       height: 16,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: selected ? AppColors.copper : AppColors.inkMuted.withOpacity(0.5),
+          color: selected ? p.copper : p.inkMuted.withOpacity(0.5),
           width: selected ? 4.5 : 1.5,
         ),
-        color: selected ? AppColors.ivory : Colors.transparent,
+        color: selected ? p.ground : Colors.transparent,
       ),
     );
   }

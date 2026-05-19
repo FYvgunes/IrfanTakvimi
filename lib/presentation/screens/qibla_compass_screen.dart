@@ -38,6 +38,7 @@ class QiblaCompassScreen extends StatelessWidget {
           return StreamBuilder<double>(
             stream: compass.headingStream(),
             builder: (context, snap) {
+              final p = context.palette;
               final heading = snap.data ?? 0;
               return Center(
                 child: Padding(
@@ -46,11 +47,11 @@ class QiblaCompassScreen extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text('Kâbe Yönü',
+                        Text('Kâbe Yönü',
                             style: TextStyle(
                                 fontSize: 13,
                                 letterSpacing: 1.2,
-                                color: AppColors.gold,
+                                color: p.copper,
                                 fontWeight: FontWeight.w600)),
                         const SizedBox(height: AppSpacing.md),
                         QiblaCompass(
@@ -59,8 +60,8 @@ class QiblaCompassScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: AppSpacing.md),
                         Text('Yön: ${bearing.toStringAsFixed(1)}°',
-                            style: const TextStyle(
-                                color: AppColors.indigoDeep, fontSize: 14)),
+                            style: TextStyle(
+                                color: p.ink, fontSize: 14)),
                       ],
                     ),
                   ),
@@ -87,21 +88,21 @@ class _UnsupportedFallback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     return Center(
       child: ArtisticCard(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.warning_amber_rounded,
-                color: AppColors.gold, size: 36),
+            Icon(Icons.warning_amber_rounded, color: p.copper, size: 36),
             const SizedBox(height: AppSpacing.sm),
-            const Text('Bu platformda pusula sensörü yok.',
-                style: TextStyle(color: AppColors.indigoDeep)),
+            Text('Bu platformda pusula sensörü yok.',
+                style: TextStyle(color: p.ink)),
             const SizedBox(height: AppSpacing.sm),
             Text('Kâbe yönü: ${bearingDegrees.toStringAsFixed(1)}° (kuzeyden)',
-                style: const TextStyle(
+                style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.emeraldDeep)),
+                    color: p.copper)),
           ],
         ),
       ),

@@ -22,7 +22,7 @@ class QiblaCompass extends StatelessWidget {
       width: size,
       height: size,
       child: CustomPaint(
-        painter: _CompassPainter(angle: delta),
+        painter: _CompassPainter(angle: delta, palette: context.palette),
       ),
     );
   }
@@ -30,8 +30,9 @@ class QiblaCompass extends StatelessWidget {
 
 class _CompassPainter extends CustomPainter {
   final double angle;
+  final AppPalette palette;
 
-  _CompassPainter({required this.angle});
+  _CompassPainter({required this.angle, required this.palette});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -39,18 +40,18 @@ class _CompassPainter extends CustomPainter {
     final radius = size.shortestSide / 2 - 8;
 
     final ring = Paint()
-      ..color = AppColors.gold.withOpacity(0.6)
+      ..color = palette.copper.withOpacity(0.6)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
     canvas.drawCircle(center, radius, ring);
 
     final innerRing = Paint()
-      ..color = AppColors.emerald.withOpacity(0.25)
+      ..color = palette.heritage.withOpacity(0.25)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
     canvas.drawCircle(center, radius * 0.7, innerRing);
 
-    final tick = Paint()..color = AppColors.indigoDeep.withOpacity(0.5);
+    final tick = Paint()..color = palette.ink.withOpacity(0.5);
     for (var i = 0; i < 12; i++) {
       final a = i * math.pi / 6;
       final p1 = center + Offset(math.sin(a) * radius, -math.cos(a) * radius);
@@ -69,18 +70,19 @@ class _CompassPainter extends CustomPainter {
       ..lineTo(0, 16)
       ..lineTo(-12, 0)
       ..close();
-    final needlePaint = Paint()..color = AppColors.emeraldDeep;
+    final needlePaint = Paint()..color = palette.heritage;
     canvas.drawPath(needle, needlePaint);
 
-    final tip = Paint()..color = AppColors.gold;
+    final tip = Paint()..color = palette.copper;
     canvas.drawCircle(Offset(0, -radius * 0.78), 6, tip);
 
     canvas.restore();
 
-    final dot = Paint()..color = AppColors.indigoDeep;
+    final dot = Paint()..color = palette.ink;
     canvas.drawCircle(center, 4, dot);
   }
 
   @override
-  bool shouldRepaint(covariant _CompassPainter old) => old.angle != angle;
+  bool shouldRepaint(covariant _CompassPainter old) =>
+      old.angle != angle || old.palette != palette;
 }

@@ -34,13 +34,14 @@ class PlatformAwareButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     final isIos = Theme.of(context).platform == TargetPlatform.iOS;
-    return isIos ? _buildCupertino() : _buildMaterial();
+    return isIos ? _buildCupertino(p) : _buildMaterial(p);
   }
 
   // ---------------- Material ----------------
 
-  Widget _buildMaterial() {
+  Widget _buildMaterial(AppPalette p) {
     final padH = dense ? AppSpacing.md : AppSpacing.lg;
     final padV = dense ? AppSpacing.sm : 14.0;
     final radius = BorderRadius.circular(AppRadius.small);
@@ -56,22 +57,22 @@ class PlatformAwareButton extends StatelessWidget {
           FilledButton(
             onPressed: onPressed,
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.heritage,
-              foregroundColor: AppColors.cream,
-              disabledBackgroundColor: AppColors.heritage.withOpacity(0.35),
-              disabledForegroundColor: AppColors.cream.withOpacity(0.55),
+              backgroundColor: p.heritage,
+              foregroundColor: p.cream,
+              disabledBackgroundColor: p.heritage.withOpacity(0.35),
+              disabledForegroundColor: p.cream.withOpacity(0.55),
               padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
               shape: RoundedRectangleBorder(
                 borderRadius: radius,
                 side: BorderSide(
-                  color: AppColors.copper.withOpacity(_enabled ? 0.65 : 0.25),
+                  color: p.copper.withOpacity(_enabled ? 0.65 : 0.25),
                   width: 1,
                 ),
               ),
               elevation: 0,
               textStyle: textStyle,
             ),
-            child: _content(AppColors.cream),
+            child: _content(p.cream),
           ),
         );
 
@@ -80,18 +81,18 @@ class PlatformAwareButton extends StatelessWidget {
           OutlinedButton(
             onPressed: onPressed,
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.copper,
-              disabledForegroundColor: AppColors.copper.withOpacity(0.35),
-              backgroundColor: AppColors.ivory,
+              foregroundColor: p.copper,
+              disabledForegroundColor: p.copper.withOpacity(0.35),
+              backgroundColor: p.ground,
               padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
               shape: RoundedRectangleBorder(borderRadius: radius),
               side: BorderSide(
-                color: AppColors.copper.withOpacity(_enabled ? 0.65 : 0.25),
+                color: p.copper.withOpacity(_enabled ? 0.65 : 0.25),
                 width: 1,
               ),
               textStyle: textStyle,
             ),
-            child: _content(AppColors.copper),
+            child: _content(p.copper),
           ),
         );
 
@@ -100,13 +101,13 @@ class PlatformAwareButton extends StatelessWidget {
           TextButton(
             onPressed: onPressed,
             style: TextButton.styleFrom(
-              foregroundColor: AppColors.copper,
-              disabledForegroundColor: AppColors.copper.withOpacity(0.35),
+              foregroundColor: p.copper,
+              disabledForegroundColor: p.copper.withOpacity(0.35),
               padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
               shape: RoundedRectangleBorder(borderRadius: radius),
               textStyle: textStyle,
             ),
-            child: _content(AppColors.copper),
+            child: _content(p.copper),
           ),
         );
     }
@@ -130,7 +131,7 @@ class PlatformAwareButton extends StatelessWidget {
 
   // ---------------- Cupertino (iOS) ----------------
 
-  Widget _buildCupertino() {
+  Widget _buildCupertino(AppPalette p) {
     final padH = dense ? AppSpacing.md : AppSpacing.lg;
     final padV = dense ? AppSpacing.sm : 14.0;
     final radius = BorderRadius.circular(AppRadius.small);
@@ -145,24 +146,24 @@ class PlatformAwareButton extends StatelessWidget {
     final BoxBorder? border;
     switch (variant) {
       case ButtonVariant.primary:
-        bg = AppColors.heritage;
-        fg = AppColors.cream;
+        bg = p.heritage;
+        fg = p.cream;
         border = Border.all(
-          color: AppColors.copper.withOpacity(_enabled ? 0.65 : 0.25),
+          color: p.copper.withOpacity(_enabled ? 0.65 : 0.25),
           width: 1,
         );
         break;
       case ButtonVariant.secondary:
-        bg = AppColors.ivory;
-        fg = AppColors.copper;
+        bg = p.ground;
+        fg = p.copper;
         border = Border.all(
-          color: AppColors.copper.withOpacity(_enabled ? 0.65 : 0.25),
+          color: p.copper.withOpacity(_enabled ? 0.65 : 0.25),
           width: 1,
         );
         break;
       case ButtonVariant.ghost:
         bg = const Color(0x00000000);
-        fg = AppColors.copper;
+        fg = p.copper;
         border = null;
         break;
     }

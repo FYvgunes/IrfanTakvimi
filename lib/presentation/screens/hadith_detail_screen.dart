@@ -66,14 +66,15 @@ class _BodyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     return ArtisticCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             hadith.source.toUpperCase(),
-            style: const TextStyle(
-              color: AppColors.gold,
+            style: TextStyle(
+              color: p.copper,
               fontSize: 11,
               letterSpacing: 1.5,
               fontWeight: FontWeight.w700,
@@ -82,19 +83,19 @@ class _BodyCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(
             'Hadis No. ${hadith.hadithNo}',
-            style: const TextStyle(
-              color: AppColors.muted,
+            style: TextStyle(
+              color: p.inkMuted,
               fontSize: 12,
             ),
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
             hadith.text,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               height: 1.6,
               fontStyle: FontStyle.italic,
-              color: AppColors.indigoDeep,
+              color: p.ink,
             ),
           ),
         ],

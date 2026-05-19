@@ -24,6 +24,7 @@ class _LocationSelectorScreenState extends State<LocationSelectorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
     final repo = context.read<ILocationRepository>();
     final countries = repo.countries;
     _country ??= countries.isNotEmpty ? countries.first : null;
@@ -45,7 +46,7 @@ class _LocationSelectorScreenState extends State<LocationSelectorScreen> {
                 'KONUM',
                 style: bodyFont(
                   size: 11,
-                  color: AppColors.copper,
+                  color: p.copper,
                   weight: FontWeight.w600,
                   letterSpacing: 2.4,
                 ),
@@ -54,7 +55,7 @@ class _LocationSelectorScreenState extends State<LocationSelectorScreen> {
               Container(
                   width: 40,
                   height: 1,
-                  color: AppColors.copper.withOpacity(0.55)),
+                  color: p.copper.withOpacity(0.55)),
               const SizedBox(height: AppSpacing.lg),
               if (showCountry) ...[
                 PickerField(
